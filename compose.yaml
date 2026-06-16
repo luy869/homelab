@@ -1,0 +1,23 @@
+# homelab — root orchestration (wrap & tidy)
+#
+# Bundles each app's production compose via `include` so the whole stack starts
+# with a single command:
+#
+#   docker compose up -d            # or ./scripts/up.sh
+#
+# Host-level services (Ollama :11434, CLIP gRPC :50051, nginx :80, Cloudflare
+# Tunnel) are intentionally NOT containerised here — see services/ and proxy/.
+# They must already be running on the host for the stack to work.
+#
+# Each app keeps its own secrets in apps/<app>/.env (gitignored). The long-form
+# `include` sets project_directory + env_file per app so relative build contexts
+# (./backend, ./frontend) and ${VARS} resolve against each submodule.
+
+include:
+  - path: apps/chat_bot/docker-compose.prod.yml
+    project_directory: apps/chat_bot
+    env_file: apps/chat_bot/.env
+
+  - path: apps/palette-vein/docker-compose.prod.yml
+    project_directory: apps/palette-vein
+    env_file: apps/palette-vein/.env

@@ -1,0 +1,18 @@
+# Cloudflare Tunnel ingress for the homelab server.
+# Deploy target: ~/.cloudflared/config.yml on the server, run by the cloudflared systemd unit.
+#
+# SECURITY: the credentials JSON referenced below is a SECRET (gitignored, never commit).
+# The tunnel UUID itself is not sensitive — it is useless without the credentials file.
+
+tunnel: 9f4513da-2c9e-49a9-9c09-a7b8fecebc1b
+credentials-file: /home/luy/.cloudflared/9f4513da-2c9e-49a9-9c09-a7b8fecebc1b.json
+
+ingress:
+  # Portfolio chat widget API → host nginx (:80) → chat_bot backend (:8000)
+  - hostname: api-internal.luy869.net
+    service: http://localhost:80
+  # Palette_Vein frontend container
+  - hostname: palettevein.luy869.net
+    service: http://localhost:8090
+  # Catch-all
+  - service: http_status:404

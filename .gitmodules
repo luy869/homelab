@@ -1,0 +1,8 @@
+[submodule "apps/chat_bot"]
+	path = apps/chat_bot
+	url = https://github.com/luy869/chat_bot
+	branch = main
+[submodule "apps/palette-vein"]
+	path = apps/palette-vein
+	url = https://github.com/luy869/palette-vein
+	branch = master
