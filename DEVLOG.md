@@ -10,7 +10,7 @@
 ### 決定事項
 - **統合方式 = git submodule**。`chat_bot`・`palette-vein` は今後も独立リポで開発・公開するため。subtree（push-back が煩雑・個別リポを捨てる前提）とコピー（drift）は不採用。
 - **公開設定 = public**。採用担当に URL を渡せる。秘密情報は `.env` / cloudflared credentials を gitignore で隔離。
-- **デプロイ深度 = wrap & tidy**。ホスト Ollama/CLIP/nginx は据え置き、設定のみ版管理。GPU アクセスと日常/ゲーム機運用を壊さないため。
+- **デプロイ深度 = wrap & tidy**。ホスト Ollama/CLIP/nginx は据え置き、設定のみ版管理。GPU アクセスと運用の単純さのため（サーバーは services 専用機。当初「ゲーム併用機」と誤認していたのを訂正）。
 - **リポ名 = homelab**。「server＋運用＋構成図＋インフラ管理」を含むため `-server` は付けない。
 - **README/構成図を v1 に前倒し**（当初 v2 案）。採用担当が最初に見るのは GitHub の README のため、ダッシュボードより費用対効果が高いとの判断。
 - **compose は `include` 長形式**（`project_directory` + `env_file` を各アプリに指定）。相対 build context と per-app `.env` を正しく解決するため。

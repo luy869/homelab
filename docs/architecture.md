@@ -107,9 +107,9 @@ sequenceDiagram
 
 Ollama and the CLIP gRPC service run directly on the host for three related reasons:
 
-1. **GPU access.** Docker's GPU passthrough (`--gpus`) works but adds an extra configuration layer. On a machine that also runs games and other GPU workloads, it is simpler and more reliable to let host services own the GPU directly.
+1. **GPU access.** Docker's GPU passthrough (`--gpus`) works but adds an extra configuration layer. Letting the host services own the GPUs directly is simpler and more reliable for an always-on inference box.
 
-2. **Dual-use machine.** `luy-XA7C-R38` is a daily-use desktop and gaming PC. Heavy inference services are started manually when needed, not auto-started on boot. Keeping them on the host makes it easy to `systemctl start ollama` or kill them without touching Docker.
+2. **Operational simplicity.** `luy-XA7C-R38` is a dedicated, headless services box. Running Ollama and CLIP as host services (e.g. via systemd) keeps model management, GPU assignment, and start/stop straightforward — no need to rebuild or restart containers to swap a model or change which GPU a service uses.
 
 3. **VRAM constraints.** With one 6 GB and one 8 GB GPU, VRAM is finite. Running Ollama inside a container can complicate VRAM allocation and makes it harder to quickly swap models or change GPU assignments.
 

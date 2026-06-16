@@ -20,7 +20,7 @@
 5. `./scripts/status.sh` で死活確認
 
 ## 設計方針（wrap & tidy）
-- ホスト常駐サービス（Ollama/CLIP/nginx/Tunnel）はコンテナ化せず据え置き（GPU アクセス・日常/ゲーム併用機のため）。設定のみ版管理。
+- ホスト常駐サービス（Ollama/CLIP/nginx/Tunnel）はコンテナ化せず据え置き（GPU アクセスと運用の単純さのため。サーバーは services 専用機）。設定のみ版管理。
 - 各アプリは独立 GitHub リポのまま submodule 参照。アプリのコード変更は各リポで行い、homelab は submodule ポインタを更新する。
 - 秘密情報は `apps/<app>/.env` と `proxy/cloudflared/*.json` に隔離し gitignore。
 

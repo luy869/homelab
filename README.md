@@ -74,7 +74,7 @@ Admin access is over **Tailscale + SSH** only (not public).
 | RAM | 31 GB |
 | GPU 0 | NVIDIA GTX 1660 Ti (6 GB VRAM) |
 | GPU 1 | NVIDIA GTX 1070 (8 GB VRAM) |
-| Note | Dual-use desktop / gaming machine — heavy services are started manually |
+| Role | Dedicated, headless services box (24/7) — not a desktop or gaming machine |
 
 ## Tech stack
 
@@ -136,7 +136,7 @@ homelab/
 ## Notes
 
 - **Secrets are gitignored.** All `.env` files and the cloudflared credentials JSON are excluded from version control. See `.env.example` for required variables.
-- **Host services are intentionally not containerised.** Ollama and the CLIP gRPC service run directly on the host to retain GPU access. On a dual-use desktop/gaming machine, containerising GPU workloads introduces unnecessary complexity and VRAM contention. See [docs/architecture.md](docs/architecture.md) for the full rationale.
+- **Host services are intentionally not containerised.** Ollama and the CLIP gRPC service run directly on the host to keep GPU access simple — no container passthrough layer — and to make model and GPU-assignment management straightforward. See [docs/architecture.md](docs/architecture.md) for the full rationale.
 
 ## Roadmap
 
