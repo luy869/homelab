@@ -30,7 +30,8 @@
 
 ## マイルストーン
 - [x] v1 設計（plan 承認済み）
-- [~] v1 スキャフォールド（リポ雛形・submodule・compose・README/構成図・scripts）← 進行中
-- [ ] v1 カットオーバー（サーバーを homelab 起点デプロイへ切替）※ユーザー確認後に実施
+- [x] v1 スキャフォールド（リポ雛形・submodule・compose・README/構成図・scripts）+ GitHub 公開
+- [x] v1 カットオーバー（2026-06-17 完了・ダウンタイム約10秒・pgdata 移行成功）
+- [ ] v1 後片付け（旧 `~/chat_bot`・`~/works/palette-vein`・旧 volume `palettevein_palettevein_pgdata` は動作確認後に削除）
 - [ ] v2 監視ダッシュボード（`dashboard/`, dash.luy869.net）
 - [ ] v3 Open WebUI（chat.luy869.net）

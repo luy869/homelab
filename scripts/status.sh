@@ -23,7 +23,7 @@ fi
 
 # Docker services
 check "docker: rag-platform" "docker ps --format '{{.Names}}' | grep -q '^rag-platform$'"
-check "docker: palette-vein" "docker ps --format '{{.Names}}' | grep -E -q '(^palettevein|palette)'"
+check "docker: palette-vein" "docker ps --format '{{.Names}}' | grep -Eq 'palettevein|homelab-(frontend|backend|postgres)'"
 
 # Host services
 check "Ollama (:11434)" "curl -sf http://localhost:11434/api/tags >/dev/null"
