@@ -32,6 +32,8 @@
 - [x] v1 設計（plan 承認済み）
 - [x] v1 スキャフォールド（リポ雛形・submodule・compose・README/構成図・scripts）+ GitHub 公開
 - [x] v1 カットオーバー（2026-06-17 完了・ダウンタイム約10秒・pgdata 移行成功）
+- [x] v1.1 chat_bot RAG 再構築（2026-06-17 完了・6 .md + system_prompt 投入・top-K 5→10 + `RAG_TOP_K` env var 化・17 エピソード体制で homelab を ep.17 として収録）
 - [ ] v1 後片付け（旧 `~/chat_bot`・`~/works/palette-vein`・旧 volume `palettevein_palettevein_pgdata` は動作確認後に削除）
+- [ ] v1.2 chat_bot LLM アップグレード（qwen3.5:9b の能力限界による技術帰属誤答の解消。`OLLAMA_LLM_MODEL` env var 化 + より高性能なモデルへの切替検証）
 - [ ] v2 監視ダッシュボード（`dashboard/`, dash.luy869.net）
 - [ ] v3 Open WebUI（chat.luy869.net）
