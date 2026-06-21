@@ -21,3 +21,7 @@ include:
   - path: apps/palette-vein/docker-compose.prod.yml
     project_directory: apps/palette-vein
     env_file: apps/palette-vein/.env
+
+  - path: dashboard/docker-compose.prod.yml
+    project_directory: dashboard
+    env_file: dashboard/.env
