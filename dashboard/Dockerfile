@@ -9,9 +9,11 @@ RUN npm run build
 # Stage 2: Build Go backend with embedded frontend
 FROM golang:1.25-alpine AS builder
 WORKDIR /app
+COPY backend/go.mod backend/go.sum ./
+RUN go mod download
 COPY backend/ .
 COPY --from=frontend /frontend/dist ./static
-RUN GOFLAGS=-mod=mod go build -o dashboard .
+RUN go build -o dashboard .
 
 # Stage 3: Minimal runtime
 FROM alpine:3.20
