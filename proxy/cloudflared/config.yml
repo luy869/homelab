@@ -14,5 +14,8 @@ ingress:
   # Palette_Vein frontend container
   - hostname: palettevein.luy869.net
     service: http://localhost:8090
+  # Homelab monitoring dashboard
+  - hostname: dash.luy869.net
+    service: http://localhost:3001
   # Catch-all
   - service: http_status:404
