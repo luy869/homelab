@@ -35,5 +35,5 @@
 - [x] v1.1 chat_bot RAG 再構築（2026-06-17 完了・6 .md + system_prompt 投入・top-K 5→10 + `RAG_TOP_K` env var 化・17 エピソード体制で homelab を ep.17 として収録）
 - [x] v1 後片付け（2026-06-21 完了: 旧 `~/chat_bot`・`~/works/palette-vein`・旧 volume `palettevein_palettevein_pgdata` を削除）
 - [x] v1.2 chat_bot LLM アップグレード（2026-06-21 完了: gemma4:12b へ切替、OLLAMA_LLM_MODEL env var 化。CLIP・最新制作物の誤答解消。WhisperX は未解消）
-- [ ] v2 監視ダッシュボード（`dashboard/`, dash.luy869.net）
+- [x] v2 監視ダッシュボード（2026-06-22 完了: `dashboard/`, dash.luy869.net 公開）
 - [ ] v3 Open WebUI（chat.luy869.net）

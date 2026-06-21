@@ -72,6 +72,21 @@
 - 検索結果のチャンク内容を返すデバッグエンドポイント（精度問題のローカル診断用）
 - WhisperX 帰属問題（VoiceLens での使用）は gemma4:12b でも未解消 → RAG チャンク側の改善（VoiceLens エピソードに WhisperX キーワードを強化）が次の手
 
+## 2026-06-22 — v2 監視ダッシュボード（dash.luy869.net）
+
+### 構成
+- `dashboard/backend/` — Go（gopsutil v3 で CPU/RAM、Docker Unix socket 直叩きでコンテナ死活、並列 HTTP チェックでエンドポイント死活）
+- `dashboard/frontend/` — React + Vite + TypeScript（10 秒ポーリング、ダークテーマ）
+- 単一コンテナ（Go が `//go:embed all:static` でビルド済みフロントを内包）
+- `homelab/compose.yaml` に include 済み、ポート 3001
+
+### 判断・注意点
+- Docker SDK（`github.com/docker/docker`）は v27+ でモジュール分割されており import パスが複雑 → Unix socket への生 HTTP リクエストで代替（依存ゼロ）
+- サーバーの Docker ビルド環境が `proxy.golang.org` に繋がらない → `go mod vendor` + `-mod=vendor` で解決
+- `api-internal.luy869.net/health` は nginx の静的ファイルサーバーに当たり 500 → 正しいエンドポイントは `/api/health`
+- `.env` 変更後は `docker restart` ではなく `docker compose up -d --force-recreate` が必要
+- Cloudflare DNS CNAME（`dash → 9f4513da...cfargotunnel.com`）は MCP 経由で追加
+
 ## 2026-06-21 — v1.2 LLM アップグレード（qwen3.5:9b → gemma4:12b）
 
 ### 変更内容
