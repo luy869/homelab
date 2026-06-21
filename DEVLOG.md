@@ -69,6 +69,23 @@
 - ドラフト・タスク記録は `/home/luy869/ES/output/chat_bot_profile/{PREVIEW.md, TASKS.md, *.md}`
 
 ### 後送り（将来タスク）
-- chat_bot の生成 LLM を qwen3.5:9b → より高性能なモデル（gemma2:27b / qwen2.5:32b など）に切り替えて、技術帰属問題の解消を試す
-- chat_bot に環境変数で LLM モデル指定（`OLLAMA_LLM_MODEL` 等）を追加
 - 検索結果のチャンク内容を返すデバッグエンドポイント（精度問題のローカル診断用）
+- WhisperX 帰属問題（VoiceLens での使用）は gemma4:12b でも未解消 → RAG チャンク側の改善（VoiceLens エピソードに WhisperX キーワードを強化）が次の手
+
+## 2026-06-21 — v1.2 LLM アップグレード（qwen3.5:9b → gemma4:12b）
+
+### 変更内容
+- Ollama を 0.17.7 → 0.30.10 にアップグレード（gemma4 サポートに必要）
+- `gemma4:12b` を pull（7.4GB、GTX 1070 8GB に収まる）
+- `backend/app/core/providers/ollama.py`: model ハードコードを `OLLAMA_LLM_MODEL` env var 化、`think=False`（Qwen 固有）を削除
+- `docker-compose.prod.yml`: `OLLAMA_LLM_MODEL`・`RAG_TOP_K` を environment に追加（これまで `.env` にあっても未伝達だった）
+- サーバーの `apps/chat_bot/.env` に `OLLAMA_LLM_MODEL=gemma4:12b` を追加
+
+### 検証結果
+- ✅ 「CLIPを使っているプロジェクトは？」→ Palette_Vein と正答（旧モデルは否定）
+- ✅ 「最新の制作物は？」→ homelab を含む複数プロジェクトを列挙（旧モデルは学バスのみ）
+- ❌ 「WhisperXは使っているか？」→ 「確認できません」と誤答（VoiceLens で使用）→ RAG 側の問題
+
+### 注意点
+- `OLLAMA_EMBED_MODEL` を compose の environment に追加すると `.env` の `bge-m3`（1024次元）が使われ、ChromaDB の既存インデックス（nomic-embed-text, 768次元）と次元不一致になる → `OLLAMA_EMBED_MODEL` は compose に渡さない（コードデフォルトの nomic-embed-text を使う）
+- submodule が detached HEAD になっていると `git pull` が失敗する → `git checkout main && git pull origin main` で解消
