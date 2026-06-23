@@ -104,3 +104,36 @@
 ### 注意点
 - `OLLAMA_EMBED_MODEL` を compose の environment に追加すると `.env` の `bge-m3`（1024次元）が使われ、ChromaDB の既存インデックス（nomic-embed-text, 768次元）と次元不一致になる → `OLLAMA_EMBED_MODEL` は compose に渡さない（コードデフォルトの nomic-embed-text を使う）
 - submodule が detached HEAD になっていると `git pull` が失敗する → `git checkout main && git pull origin main` で解消
+
+## 2026-06-23 — chat_bot 埋め込みモデル移行（nomic-embed-text → bge-m3）
+
+### 背景
+v1.2（gemma4:12b 化）で CLIP・最新制作物の誤答は解消したが、「WhisperXは使っていますか？」だけは「確認できません」と否定が残っていた。DEVLOG では「RAG 側の問題」とだけ記録していた。
+
+### 診断（読み取りのみ・コンテナ内 ChromaDB 直クエリ）
+- chat API の `source_files` は **ファイル名単位**で、どのチャンクが retrieval されたかは分からない。skills.md は出ているのに WhisperX 否定 → 「### WhisperX」チャンク自体が top_k に入っていない疑い。
+- コンテナ内で `collection.query(n_results=25)` を直接実行し距離を確認:
+  - **WhisperX クエリ → 「### WhisperX」チャンクは top-25 圏外**（nomic では完全に埋もれる）
+  - CLIP クエリ → 「### CLIP」チャンクは 6 位（top-10 内）→ だから CLIP だけ正答していた
+  - 両クエリとも **1 位が「## 興味がある技術（未経験）」**＝未使用技術リスト → 「使ってますか」質問で否定を誘発
+  - 距離が 0.29〜0.42 に密集 = nomic-embed-text が日本語＋固有名詞コーパスをほぼ識別できていない
+- bge-m3 で同じ比較を予測（読み取り）: WhisperX チャンクが **1 位（cos距離 0.291、2 位と大差）**、未使用技術リストは 3 位に後退 → bge-m3 で解決すると確認
+
+### 対応
+- `backend/docker-compose.prod.yml`: `OLLAMA_EMBED_MODEL=${OLLAMA_EMBED_MODEL:-nomic-embed-text}` を passthrough 追加（chat_bot commit `82df010`）。v1.2 で「次元不一致を避けるため compose に渡さない」としていた判断を、**インデックスごと bge-m3 で作り直す前提で**反転
+- サーバー `.env` は既に `OLLAMA_EMBED_MODEL=bge-m3`、bge-m3 も pull 済み
+- 手順: ①system_prompt を metadata.db からバックアップ → ②`git pull` で新 compose → ③`docker compose up -d --force-recreate app` → ④**GATE: `docker exec env | grep EMBED` で bge-m3 確認**（ここで破壊的操作の手前で検証）→ ⑤`DELETE /collections/default` → ⑥再作成 + system_prompt 再適用 → ⑦6 .md を再 upload（bge-m3 で 1024次元再構築）→ ⑧検証
+- 内容は不変: 全6ファイルがデプロイ済みとバイト単位一致、chunk 数も 3/26/13/7/15/104=168 で完全一致。**純粋な埋め込みモデル移行**
+
+### 検証結果（gemma4:12b + bge-m3, 1024次元）
+- ✅ WhisperX → 「VoiceLens で文字起こし＋話者分離に使用」と正答（**v1.2 残課題クリア**）
+- ✅ CLIP → Palette_Vein（回帰なし）
+- ✅ 最新の制作物 → homelab を筆頭に列挙
+- ✅ 好きな音楽 → 凋叶棕・ヨルシカ・Mili 等（ペルソナ維持・原稿に忠実）
+- ✅ 電話番号 → 拒否
+
+### 知見 / 注意
+- **`source_files` はファイル名単位**なので retrieval デバッグには不十分。チャンク単位の距離は `docker exec rag-platform /app/.venv/bin/python` で `collection.query(include=["distances"])` を直接叩くのが確実（home の `collections.py` shadow を避けるため container 内 venv python を使う）
+- 埋め込みモデル変更は**必ずインデックス再構築（全 re-ingest）とセット**。次元が変わる（768→1024）ため混在不可。delete collection → recreate → re-upload の順
+- bind mount のため compose の environment 追加は **`docker restart` では反映されない**。`docker compose up -d --force-recreate` が必須
+- nomic-embed-text は英語中心で日本語＋固有名詞の識別が弱い。日本語 RAG では bge-m3（多言語）が明確に優位

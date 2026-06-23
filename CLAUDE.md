@@ -34,6 +34,7 @@
 - [x] v1 カットオーバー（2026-06-17 完了・ダウンタイム約10秒・pgdata 移行成功）
 - [x] v1.1 chat_bot RAG 再構築（2026-06-17 完了・6 .md + system_prompt 投入・top-K 5→10 + `RAG_TOP_K` env var 化・17 エピソード体制で homelab を ep.17 として収録）
 - [x] v1 後片付け（2026-06-21 完了: 旧 `~/chat_bot`・`~/works/palette-vein`・旧 volume `palettevein_palettevein_pgdata` を削除）
-- [x] v1.2 chat_bot LLM アップグレード（2026-06-21 完了: gemma4:12b へ切替、OLLAMA_LLM_MODEL env var 化。CLIP・最新制作物の誤答解消。WhisperX は未解消）
+- [x] v1.2 chat_bot LLM アップグレード（2026-06-21 完了: gemma4:12b へ切替、OLLAMA_LLM_MODEL env var 化。CLIP・最新制作物の誤答解消）
+- [x] v1.2.1 chat_bot 埋め込みモデル移行（2026-06-23 完了: nomic-embed-text → bge-m3、OLLAMA_EMBED_MODEL passthrough + 全6 .md 再投入で 1024次元化。WhisperX 帰属誤答を解消＝v1.2 残課題クリア）
 - [x] v2 監視ダッシュボード（2026-06-22 完了: `dashboard/`, dash.luy869.net 公開）
 - [ ] v3 未定
